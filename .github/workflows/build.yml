@@ -19,7 +19,7 @@ jobs:
       - name: Build backend
         run: dotnet build TaskManager.API/TaskManager.API.csproj --no-restore
       - name: Test backend
-        run: dotnet test TaskManager.API.Tests/TaskManager.API.Tests.csproj --logger "trx;LogFileName=testresults.trx" --results-directory "./TestResults"
+        run: dotnet test TaskManager.API.Tests.csproj --logger "trx;LogFileName=testresults.trx" --results-directory "./TestResults"
         working-directory: TaskManager.API.Tests
       - name: Upload backend test results
         uses: actions/upload-artifact@v4
