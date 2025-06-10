@@ -19,7 +19,19 @@ jobs:
       - name: Build backend
         run: dotnet build TaskManager.API/TaskManager.API.csproj --no-restore
       - name: Test backend
-        run: dotnet test TaskManager.API/TaskManager.API.csproj --logger "console;verbosity=detailed"
+        run: dotnet test TaskManager.API/TaskManager.API.csproj --logger "trx;LogFileName=testresults.trx" --results-directory "TestResults"
+      - name: Upload backend test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: TestResults
+        if: always()
+      - name: Report backend test results
+        uses: bibipkins/dotnet-test-reporter@v1.4.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          results-path: TestResults/testresults.trx
+          comment-title: 'Backend Test Results'
       - name: Publish backend
         run: dotnet publish TaskManager.API/TaskManager.API.csproj -c Release -o ./publish
 
