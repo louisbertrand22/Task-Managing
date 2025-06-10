@@ -46,5 +46,176 @@ namespace TaskManager.API.Tests
 
             context.Database.EnsureDeleted();
         }
+
+        [Fact]
+        public async Task GetTask_ReturnsTask_WhenTaskExists()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var task = new TaskItem { Id = 1, Title = "Test Task", CreatedAt = System.DateTime.UtcNow };
+            context.Tasks.Add(task);
+            await context.SaveChangesAsync();
+
+            var mockLogger = new Mock<ILogger<TasksController>>();
+            var controller = new TasksController(context, mockLogger.Object);
+
+            // Act
+            var result = await controller.GetTask(1);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedTask = Assert.IsType<TaskItem>(okResult.Value);
+            Assert.Equal(1, returnedTask.Id);
+            Assert.Equal("Test Task", returnedTask.Title);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async Task GetTask_ReturnsNotFound_WhenTaskDoesNotExist()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var mockLogger = new Mock<ILogger<TasksController>>();
+            var controller = new TasksController(context, mockLogger.Object);
+
+            // Act
+            var result = await controller.GetTask(99);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async Task CreateTask_CreatesAndReturnsNewTask()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var mockLogger = new Mock<ILogger<TasksController>>();
+            var controller = new TasksController(context, mockLogger.Object);
+            var newTask = new TaskItem { Title = "New Task", Description = "Description", Status = TaskStatus.Todo, Priority = TaskPriority.Medium, DueDate = System.DateTime.UtcNow.AddDays(7) };
+
+            // Act
+            var result = await controller.CreateTask(newTask);
+
+            // Assert
+            var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            var returnedTask = Assert.IsType<TaskItem>(createdAtActionResult.Value);
+            Assert.Equal("New Task", returnedTask.Title);
+            Assert.NotEqual(0, returnedTask.Id); // ID should be generated
+
+            var taskInDb = await context.Tasks.FindAsync(returnedTask.Id);
+            Assert.NotNull(taskInDb);
+            Assert.Equal("New Task", taskInDb.Title);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async Task UpdateTask_UpdatesExistingTask()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var existingTask = new TaskItem { Id = 1, Title = "Original Title", CreatedAt = System.DateTime.UtcNow };
+            context.Tasks.Add(existingTask);
+            await context.SaveChangesAsync();
+
+            var mockLogger = new Mock<ILogger<TasksController>>();
+            var controller = new TasksController(context, mockLogger.Object);
+
+            var updatedTask = new TaskItem { Id = 1, Title = "Updated Title", Description = "New Desc", Status = TaskStatus.Done, Priority = TaskPriority.High, DueDate = System.DateTime.UtcNow.AddDays(10) };
+
+            // Act
+            var result = await controller.UpdateTask(1, updatedTask);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+
+            var taskInDb = await context.Tasks.FindAsync(1);
+            Assert.NotNull(taskInDb);
+            Assert.Equal("Updated Title", taskInDb.Title);
+            Assert.Equal("New Desc", taskInDb.Description);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async Task UpdateTask_ReturnsNotFound_WhenTaskDoesNotExist()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var mockLogger = new Mock<ILogger<TasksController>>();
+            var controller = new TasksController(context, mockLogger.Object);
+            var updatedTask = new TaskItem { Id = 99, Title = "Non Existent", CreatedAt = System.DateTime.UtcNow };
+
+            // Act
+            var result = await controller.UpdateTask(99, updatedTask);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async Task UpdateTask_ReturnsBadRequest_WhenIdMismatch()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var mockLogger = new Mock<ILogger<TasksController>>();
+            var controller = new TasksController(context, mockLogger.Object);
+            var updatedTask = new TaskItem { Id = 1, Title = "Mismatch", CreatedAt = System.DateTime.UtcNow };
+
+            // Act
+            var result = await controller.UpdateTask(2, updatedTask); // ID in route (2) doesn't match ID in body (1)
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async Task DeleteTask_DeletesExistingTask()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var taskToDelete = new TaskItem { Id = 1, Title = "To Delete", CreatedAt = System.DateTime.UtcNow };
+            context.Tasks.Add(taskToDelete);
+            await context.SaveChangesAsync();
+
+            var mockLogger = new Mock<ILogger<TasksController>>();
+            var controller = new TasksController(context, mockLogger.Object);
+
+            // Act
+            var result = await controller.DeleteTask(1);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+
+            var taskInDb = await context.Tasks.FindAsync(1);
+            Assert.Null(taskInDb); // Task should be deleted
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async Task DeleteTask_ReturnsNotFound_WhenTaskDoesNotExist()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var mockLogger = new Mock<ILogger<TasksController>>();
+            var controller = new TasksController(context, mockLogger.Object);
+
+            // Act
+            var result = await controller.DeleteTask(99);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+
+            context.Database.EnsureDeleted();
+        }
     }
 } 
