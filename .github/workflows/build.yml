@@ -19,7 +19,7 @@ jobs:
       - name: Build backend
         run: dotnet build TaskManager.API/TaskManager.API.csproj --no-restore
       - name: Test backend
-        run: dotnet test TaskManager.API/TaskManager.API.csproj --logger "console;verbosity=normal"
+        run: dotnet test TaskManager.API/TaskManager.API.csproj --logger "console;verbosity=detailed"
       - name: Publish backend
         run: dotnet publish TaskManager.API/TaskManager.API.csproj -c Release -o ./publish
 
