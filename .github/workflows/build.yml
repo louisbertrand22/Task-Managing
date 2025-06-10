@@ -19,12 +19,15 @@ jobs:
       - name: Build backend
         run: dotnet build TaskManager.API/TaskManager.API.csproj --no-restore
       - name: Test backend
-        run: dotnet test TaskManager.API/TaskManager.API.csproj
+        run: dotnet test TaskManager.API/TaskManager.API.csproj --logger "console;verbosity=normal"
       - name: Publish backend
         run: dotnet publish TaskManager.API/TaskManager.API.csproj -c Release -o ./publish
 
   frontend-build:
     runs-on: ubuntu-latest
+    env:
+      CHROME_BIN: /usr/bin/google-chrome
+      CHROME_FLAGS: --no-sandbox --disable-gpu
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
