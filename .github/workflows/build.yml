@@ -38,5 +38,5 @@ jobs:
         run: npm run build -- --output-path=./dist/task-manager-web --configuration production
         working-directory: TaskManager.Web
       - name: Test frontend
-        run: npm test
+        run: npm test -- --no-watch --no-progress --browsers=ChromeHeadless --no-sandbox
         working-directory: TaskManager.Web 
