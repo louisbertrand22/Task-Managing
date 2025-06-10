@@ -94,14 +94,7 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": [],
-            "browsers": ["ChromeHeadlessCI"],
-            "customLaunchers": {
-              "ChromeHeadlessCI": {
-                "base": "ChromeHeadless",
-                "flags": ["--no-sandbox"]
-              }
-            }
+            "scripts": []
           }
         }
       }
