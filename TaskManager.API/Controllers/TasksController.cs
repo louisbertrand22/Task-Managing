@@ -106,9 +106,17 @@ namespace TaskManager.API.Controllers
                 return BadRequest();
             }
 
-            task.UpdatedAt = DateTime.UtcNow;
-            _context.Entry(task).State = EntityState.Modified;
-            _context.Entry(task).Property(x => x.CreatedAt).IsModified = false;
+            var existingTask = await _context.Tasks.FindAsync(id);
+            if (existingTask == null)
+            {
+                return NotFound();
+            }
+
+            existingTask.Title = task.Title;
+            existingTask.Description = task.Description;
+            existingTask.Status = task.Status;
+            existingTask.Priority = task.Priority;
+            existingTask.UpdatedAt = DateTime.UtcNow;
 
             try
             {

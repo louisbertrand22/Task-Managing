@@ -14,10 +14,10 @@ namespace TaskManager.API.Tests
 {
     public class TasksControllerTests
     {
-        private ApplicationDbContext GetInMemoryDbContext()
+        private ApplicationDbContext GetInMemoryDbContext(string databaseName)
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
+                .UseInMemoryDatabase(databaseName: databaseName)
                 .Options;
             var context = new ApplicationDbContext(options);
             return context;
@@ -26,14 +26,18 @@ namespace TaskManager.API.Tests
         [Fact]
         public async Task GetTasks_ReturnsAllTasks()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
-            context.Tasks.Add(new TaskItem { Id = 1, Title = "Test Task 1", Description = "" , CreatedAt = System.DateTime.UtcNow });
-            context.Tasks.Add(new TaskItem { Id = 2, Title = "Test Task 2", Description = "" , CreatedAt = System.DateTime.UtcNow });
-            await context.SaveChangesAsync();
+            using var arrangeContext = GetInMemoryDbContext(dbName);
+            var task1 = new TaskItem { Id = 1, Title = "Test Task 1", Description = "Desc 1", CreatedAt = System.DateTime.UtcNow.AddHours(-1) };
+            var task2 = new TaskItem { Id = 2, Title = "Test Task 2", Description = "Desc 2", CreatedAt = System.DateTime.UtcNow };
+            arrangeContext.Tasks.Add(task1);
+            arrangeContext.Tasks.Add(task2);
+            await arrangeContext.SaveChangesAsync();
 
+            using var actContext = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
-            var controller = new TasksController(context, mockLogger.Object);
+            var controller = new TasksController(actContext, mockLogger.Object);
 
             // Act
             var result = await controller.GetTasks(null, null, null, null, null);
@@ -41,23 +45,26 @@ namespace TaskManager.API.Tests
             // Assert
             var tasks = Assert.IsType<List<TaskItem>>(result.Value);
             Assert.Equal(2, tasks.Count);
-            Assert.Equal("Test Task 1", tasks[0].Title);
-            Assert.Equal("Test Task 2", tasks[1].Title);
+            Assert.Equal("Test Task 2", tasks[0].Title); // Should be Task 2 due to CreatedAt Descending
+            Assert.Equal("Test Task 1", tasks[1].Title); // Should be Task 1 due to CreatedAt Descending
 
-            context.Database.EnsureDeleted();
+            using var cleanupContext = GetInMemoryDbContext(dbName);
+            cleanupContext.Database.EnsureDeleted();
         }
 
         [Fact]
         public async Task GetTask_ReturnsTask_WhenTaskExists()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
-            var task = new TaskItem { Id = 1, Title = "Test Task", Description = "" , CreatedAt = System.DateTime.UtcNow };
-            context.Tasks.Add(task);
-            await context.SaveChangesAsync();
+            using var arrangeContext = GetInMemoryDbContext(dbName);
+            var task = new TaskItem { Id = 1, Title = "Test Task", Description = "Test Desc", CreatedAt = System.DateTime.UtcNow };
+            arrangeContext.Tasks.Add(task);
+            await arrangeContext.SaveChangesAsync();
 
+            using var actContext = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
-            var controller = new TasksController(context, mockLogger.Object);
+            var controller = new TasksController(actContext, mockLogger.Object);
 
             // Act
             var result = await controller.GetTask(1);
@@ -68,14 +75,16 @@ namespace TaskManager.API.Tests
             Assert.Equal(1, returnedTask.Id);
             Assert.Equal("Test Task", returnedTask.Title);
 
-            context.Database.EnsureDeleted();
+            using var cleanupContext = GetInMemoryDbContext(dbName);
+            cleanupContext.Database.EnsureDeleted();
         }
 
         [Fact]
         public async Task GetTask_ReturnsNotFound_WhenTaskDoesNotExist()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
+            using var context = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
 
@@ -91,8 +100,9 @@ namespace TaskManager.API.Tests
         [Fact]
         public async Task CreateTask_CreatesAndReturnsNewTask()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
+            using var context = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
             var newTask = new TaskItem { Title = "New Task", Description = "Description", Status = TaskManager.API.Models.TaskStatus.ToDo, Priority = TaskManager.API.Models.TaskPriority.Medium };
@@ -116,14 +126,16 @@ namespace TaskManager.API.Tests
         [Fact]
         public async Task UpdateTask_UpdatesExistingTask()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
-            var existingTask = new TaskItem { Id = 1, Title = "Original Title", Description = "" , CreatedAt = System.DateTime.UtcNow };
-            context.Tasks.Add(existingTask);
-            await context.SaveChangesAsync();
+            using var arrangeContext = GetInMemoryDbContext(dbName);
+            var existingTask = new TaskItem { Id = 1, Title = "Original Title", Description = "Original Desc", CreatedAt = System.DateTime.UtcNow };
+            arrangeContext.Tasks.Add(existingTask);
+            await arrangeContext.SaveChangesAsync();
 
+            using var actContext = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
-            var controller = new TasksController(context, mockLogger.Object);
+            var controller = new TasksController(actContext, mockLogger.Object);
 
             var updatedTask = new TaskItem { Id = 1, Title = "Updated Title", Description = "New Desc", Status = TaskManager.API.Models.TaskStatus.Done, Priority = TaskManager.API.Models.TaskPriority.High };
 
@@ -133,22 +145,25 @@ namespace TaskManager.API.Tests
             // Assert
             Assert.IsType<NoContentResult>(result);
 
-            var taskInDb = await context.Tasks.FindAsync(1);
+            using var assertContext = GetInMemoryDbContext(dbName);
+            var taskInDb = await assertContext.Tasks.FindAsync(1);
             Assert.NotNull(taskInDb);
             Assert.Equal("Updated Title", taskInDb.Title);
             Assert.Equal("New Desc", taskInDb.Description);
 
-            context.Database.EnsureDeleted();
+            using var cleanupContext = GetInMemoryDbContext(dbName);
+            cleanupContext.Database.EnsureDeleted();
         }
 
         [Fact]
         public async Task UpdateTask_ReturnsNotFound_WhenTaskDoesNotExist()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
+            using var context = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
-            var updatedTask = new TaskItem { Id = 99, Title = "Non Existent", Description = "" , CreatedAt = System.DateTime.UtcNow };
+            var updatedTask = new TaskItem { Id = 99, Title = "Non Existent", Description = "Non Existent Desc", CreatedAt = System.DateTime.UtcNow };
 
             // Act
             var result = await controller.UpdateTask(99, updatedTask);
@@ -162,11 +177,12 @@ namespace TaskManager.API.Tests
         [Fact]
         public async Task UpdateTask_ReturnsBadRequest_WhenIdMismatch()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
+            using var context = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
-            var updatedTask = new TaskItem { Id = 1, Title = "Mismatch", Description = "" , CreatedAt = System.DateTime.UtcNow };
+            var updatedTask = new TaskItem { Id = 1, Title = "Mismatch", Description = "Mismatch Desc", CreatedAt = System.DateTime.UtcNow };
 
             // Act
             var result = await controller.UpdateTask(2, updatedTask); // ID in route (2) doesn't match ID in body (1)
@@ -180,14 +196,16 @@ namespace TaskManager.API.Tests
         [Fact]
         public async Task DeleteTask_DeletesExistingTask()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
-            var taskToDelete = new TaskItem { Id = 1, Title = "To Delete", Description = "" , CreatedAt = System.DateTime.UtcNow };
-            context.Tasks.Add(taskToDelete);
-            await context.SaveChangesAsync();
+            using var arrangeContext = GetInMemoryDbContext(dbName);
+            var taskToDelete = new TaskItem { Id = 1, Title = "To Delete", Description = "To Delete Desc", CreatedAt = System.DateTime.UtcNow };
+            arrangeContext.Tasks.Add(taskToDelete);
+            await arrangeContext.SaveChangesAsync();
 
+            using var actContext = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
-            var controller = new TasksController(context, mockLogger.Object);
+            var controller = new TasksController(actContext, mockLogger.Object);
 
             // Act
             var result = await controller.DeleteTask(1);
@@ -195,17 +213,20 @@ namespace TaskManager.API.Tests
             // Assert
             Assert.IsType<NoContentResult>(result);
 
-            var taskInDb = await context.Tasks.FindAsync(1);
+            using var assertContext = GetInMemoryDbContext(dbName);
+            var taskInDb = await assertContext.Tasks.FindAsync(1);
             Assert.Null(taskInDb); // Task should be deleted
 
-            context.Database.EnsureDeleted();
+            using var cleanupContext = GetInMemoryDbContext(dbName);
+            cleanupContext.Database.EnsureDeleted();
         }
 
         [Fact]
         public async Task DeleteTask_ReturnsNotFound_WhenTaskDoesNotExist()
         {
+            var dbName = System.Guid.NewGuid().ToString();
             // Arrange
-            var context = GetInMemoryDbContext();
+            using var context = GetInMemoryDbContext(dbName);
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
 
