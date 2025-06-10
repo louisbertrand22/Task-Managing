@@ -95,7 +95,7 @@ namespace TaskManager.API.Tests
             var context = GetInMemoryDbContext();
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
-            var newTask = new TaskItem { Title = "New Task", Description = "Description", Status = TaskManager.API.Models.TaskStatus.Todo, Priority = TaskManager.API.Models.TaskPriority.Medium };
+            var newTask = new TaskItem { Title = "New Task", Description = "Description", Status = TaskManager.API.Models.TaskStatus.ToDo, Priority = TaskManager.API.Models.TaskPriority.Medium };
 
             // Act
             var result = await controller.CreateTask(newTask);
