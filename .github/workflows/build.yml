@@ -1,0 +1,37 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  backend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore dependencies
+        run: dotnet restore TaskManager.API/TaskManager.API.csproj
+      - name: Build backend
+        run: dotnet build TaskManager.API/TaskManager.API.csproj --no-restore
+      - name: Publish backend
+        run: dotnet publish TaskManager.API/TaskManager.API.csproj -c Release -o ./publish
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: TaskManager.Web
+      - name: Build frontend
+        run: npm run build -- --output-path=./dist/task-manager-web --configuration production
+        working-directory: TaskManager.Web 
