@@ -1,0 +1,115 @@
+.task-form-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 0 20px;
+
+  mat-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 30px; /* More internal padding */
+    background-color: #ffffff; /* Explicitly set card background to white */
+    color: #333; /* Darker text for readability */
+
+    .mat-card-header {
+      margin-bottom: 25px;
+      .mat-card-title {
+        font-size: 2em;
+        font-weight: 600;
+        color: #333; /* Ensure title is dark */
+      }
+    }
+
+    .mat-card-content {
+      padding: 0;
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* Spacing between form fields */
+
+        mat-form-field {
+          width: 100%;
+          display: block; /* Explicitly ensure block display */
+          /* Adjusted text color for input fields */
+          .mat-form-field-wrapper {
+            padding-bottom: 0;
+          }
+          .mat-form-field-underline {
+            &::before {
+              background-color: #e0e0e0; /* Light gray underline */
+            }
+            &.mat-focused {
+              background-color: #3f51b5; /* Primary color */
+            }
+          }
+          /* Placeholder and input text color */
+          .mat-form-field-label {
+            color: rgba(0, 0, 0, 0.6); /* Darker label */
+          }
+          .mat-form-field-underline {
+            background-color: rgba(0, 0, 0, 0.42); /* Darker underline */
+          }
+          &.mat-focused .mat-form-field-label,
+          &.mat-form-field-has-value .mat-form-field-label {
+            color: #3f51b5; /* Primary color when focused or has value */
+          }
+          input.mat-input-element,
+          textarea.mat-input-element {
+            color: #333; /* Darker input text */
+          }
+          .mat-select-value {
+            color: #333; /* Darker select value */
+          }
+        }
+      }
+
+      .full-width {
+        /* This class is now handled by the form's flex container */
+        width: 100%;
+      }
+
+      /* Existing mat-form-field styles (non-layout) */
+      mat-form-field {
+        margin-bottom: 0; /* Managed by gap on form */
+        /* Custom focus color */
+        .mat-form-field-wrapper {
+          padding-bottom: 0;
+        }
+        .mat-form-field-underline {
+          &::before {
+            background-color: #e0e0e0; /* Light gray underline */
+          }
+          &.mat-focused {
+            background-color: #3f51b5; /* Primary color */
+          }
+        }
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px; /* Increased gap */
+        margin-top: 30px; /* Increased margin */
+
+        button {
+          border-radius: 8px;
+          padding: 10px 20px;
+          font-size: 1em;
+          &[mat-raised-button][color="primary"] {
+            background-color: #3f51b5;
+            color: #fff;
+            &:hover {
+              background-color: #303f9f;
+            }
+          }
+          &[mat-button] {
+            color: #616161;
+            &:hover {
+              background-color: #f0f0f0;
+            }
+          }
+        }
+      }
+    }
+  }
+} 

@@ -1,0 +1,108 @@
+<div class="task-list-container">
+  <div class="header">
+    <h1>Task Manager</h1>
+    <button mat-raised-button color="primary" (click)="createTask()">
+      <mat-icon>add</mat-icon>
+      New Task
+    </button>
+  </div>
+
+  <mat-card class="filter-sort-card">
+    <mat-card-content>
+      <div class="filter-controls">
+        <mat-form-field>
+          <mat-label>Filter by Title</mat-label>
+          <input matInput [(ngModel)]="filterTitle" (ngModelChange)="onFilterChange()">
+          <button mat-icon-button matSuffix *ngIf="filterTitle" (click)="filterTitle = ''; onFilterChange()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Filter by Status</mat-label>
+          <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
+            <mat-option [value]="null">All</mat-option>
+            <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.viewValue }}
+            </mat-option>
+          </mat-select>
+          <button mat-icon-button matSuffix *ngIf="filterStatus !== null" (click)="filterStatus = null; onFilterChange()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Filter by Priority</mat-label>
+          <mat-select [(ngModel)]="filterPriority" (selectionChange)="onFilterChange()">
+            <mat-option [value]="null">All</mat-option>
+            <mat-option *ngFor="let priority of priorityOptions" [value]="priority.value">
+              {{ priority.viewValue }}
+            </mat-option>
+          </mat-select>
+          <button mat-icon-button matSuffix *ngIf="filterPriority !== null" (click)="filterPriority = null; onFilterChange()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <div class="sort-controls">
+        <mat-form-field>
+          <mat-label>Sort By</mat-label>
+          <mat-select [(ngModel)]="sortBy" (selectionChange)="onSortChange()">
+            <mat-option value="createdAt_desc">Newest First</mat-option>
+            <mat-option value="createdAt_asc">Oldest First</mat-option>
+            <mat-option value="priority_desc">Priority (High to Low)</mat-option>
+            <mat-option value="priority_asc">Priority (Low to High)</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="resetFilters()">
+          <mat-icon>refresh</mat-icon>
+          Reset Filters
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="task-cards-grid">
+    <mat-card *ngFor="let task of tasks" class="task-card mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title class="task-title">{{task.title}}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="task-details">
+          <div class="task-info-row">
+            <mat-chip-listbox>
+              <mat-chip [color]="TaskStatus[task.status] === 'Done' ? 'primary' : 'accent'" selected>
+                {{ TaskStatus[task.status] }}
+              </mat-chip>
+              <mat-chip [color]="TaskPriority[task.priority] === 'High' ? 'warn' : 'accent'" selected>
+                {{ TaskPriority[task.priority] }}
+              </mat-chip>
+            </mat-chip-listbox>
+          </div>
+          <div class="task-info-row date-info">
+            <span>Created: {{task.createdAt | date:'short'}}</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="task-actions">
+        <button mat-icon-button color="primary" (click)="viewTask(task.id)" matTooltip="View">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" (click)="editTask(task.id)" matTooltip="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteTask(task.id)" matTooltip="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <div *ngIf="tasks.length === 0" class="no-tasks-message">
+      <p>No tasks found. Click "New Task" to add one!</p>
+    </div>
+  </div>
+</div> 

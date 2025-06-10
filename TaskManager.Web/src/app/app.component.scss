@@ -1,0 +1,46 @@
+mat-toolbar {
+  height: 64px; /* Standard Material Design toolbar height */
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06); /* Subtle shadow */
+  background-color: #3f51b5; /* Primary color */
+  color: #fff;
+
+  .app-title {
+    font-size: 1.5em;
+    font-weight: 500;
+    text-decoration: none;
+    color: #fff;
+    margin-right: 20px;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  button {
+    border-radius: 6px;
+    padding: 0 16px; /* Adjust padding */
+    font-size: 0.9em;
+    height: 40px; /* Standard button height */
+    margin-left: 8px; /* Space between buttons */
+    color: #fff; /* White text for buttons */
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+    }
+    .mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+main {
+  padding: 30px; /* Increased padding */
+  background-color: #f8f8f8; /* Lighter background */
+  min-height: calc(100vh - 64px); /* Ensure main content fills remaining height */
+  box-sizing: border-box; /* Include padding in height calculation */
+} 

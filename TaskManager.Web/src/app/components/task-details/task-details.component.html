@@ -1,0 +1,38 @@
+<div class="task-details-container" *ngIf="task">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{task.title}}</mat-card-title>
+      <mat-card-subtitle>
+        <mat-chip [color]="task.status === TaskStatus.Done ? 'primary' : 'accent'" selected>
+          {{ TaskStatus[task.status] }}
+        </mat-chip>
+        <mat-chip [color]="task.priority === TaskPriority.High ? 'warn' : 'accent'" selected>
+          {{ TaskPriority[task.priority] }}
+        </mat-chip>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="description">{{task.description}}</p>
+      <div class="metadata">
+        <p><strong>Created:</strong> {{task.createdAt | date:'medium'}}</p>
+        <p><strong>Last Updated:</strong> {{task.updatedAt | date:'medium'}}</p>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-button (click)="editTask()">
+        <mat-icon>edit</mat-icon>
+        Edit
+      </button>
+      <button mat-button color="warn" (click)="deleteTask()">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+      <button mat-button routerLink="/tasks">
+        <mat-icon>arrow_back</mat-icon>
+        Back to List
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div> 
