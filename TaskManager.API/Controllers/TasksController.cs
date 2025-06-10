@@ -82,7 +82,7 @@ namespace TaskManager.API.Controllers
                 return NotFound();
             }
 
-            return task;
+            return Ok(task);
         }
 
         // POST: api/tasks
