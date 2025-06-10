@@ -28,8 +28,8 @@ namespace TaskManager.API.Tests
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            context.Tasks.Add(new TaskItem { Id = 1, Title = "Test Task 1", CreatedAt = System.DateTime.UtcNow });
-            context.Tasks.Add(new TaskItem { Id = 2, Title = "Test Task 2", CreatedAt = System.DateTime.UtcNow });
+            context.Tasks.Add(new TaskItem { Id = 1, Title = "Test Task 1", Description = "" , CreatedAt = System.DateTime.UtcNow });
+            context.Tasks.Add(new TaskItem { Id = 2, Title = "Test Task 2", Description = "" , CreatedAt = System.DateTime.UtcNow });
             await context.SaveChangesAsync();
 
             var mockLogger = new Mock<ILogger<TasksController>>();
@@ -52,7 +52,7 @@ namespace TaskManager.API.Tests
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            var task = new TaskItem { Id = 1, Title = "Test Task", CreatedAt = System.DateTime.UtcNow };
+            var task = new TaskItem { Id = 1, Title = "Test Task", Description = "" , CreatedAt = System.DateTime.UtcNow };
             context.Tasks.Add(task);
             await context.SaveChangesAsync();
 
@@ -95,7 +95,7 @@ namespace TaskManager.API.Tests
             var context = GetInMemoryDbContext();
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
-            var newTask = new TaskItem { Title = "New Task", Description = "Description", Status = TaskStatus.Todo, Priority = TaskPriority.Medium, DueDate = System.DateTime.UtcNow.AddDays(7) };
+            var newTask = new TaskItem { Title = "New Task", Description = "Description", Status = TaskManager.API.Models.TaskStatus.Todo, Priority = TaskManager.API.Models.TaskPriority.Medium };
 
             // Act
             var result = await controller.CreateTask(newTask);
@@ -118,14 +118,14 @@ namespace TaskManager.API.Tests
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            var existingTask = new TaskItem { Id = 1, Title = "Original Title", CreatedAt = System.DateTime.UtcNow };
+            var existingTask = new TaskItem { Id = 1, Title = "Original Title", Description = "" , CreatedAt = System.DateTime.UtcNow };
             context.Tasks.Add(existingTask);
             await context.SaveChangesAsync();
 
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
 
-            var updatedTask = new TaskItem { Id = 1, Title = "Updated Title", Description = "New Desc", Status = TaskStatus.Done, Priority = TaskPriority.High, DueDate = System.DateTime.UtcNow.AddDays(10) };
+            var updatedTask = new TaskItem { Id = 1, Title = "Updated Title", Description = "New Desc", Status = TaskManager.API.Models.TaskStatus.Done, Priority = TaskManager.API.Models.TaskPriority.High };
 
             // Act
             var result = await controller.UpdateTask(1, updatedTask);
@@ -148,7 +148,7 @@ namespace TaskManager.API.Tests
             var context = GetInMemoryDbContext();
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
-            var updatedTask = new TaskItem { Id = 99, Title = "Non Existent", CreatedAt = System.DateTime.UtcNow };
+            var updatedTask = new TaskItem { Id = 99, Title = "Non Existent", Description = "" , CreatedAt = System.DateTime.UtcNow };
 
             // Act
             var result = await controller.UpdateTask(99, updatedTask);
@@ -166,7 +166,7 @@ namespace TaskManager.API.Tests
             var context = GetInMemoryDbContext();
             var mockLogger = new Mock<ILogger<TasksController>>();
             var controller = new TasksController(context, mockLogger.Object);
-            var updatedTask = new TaskItem { Id = 1, Title = "Mismatch", CreatedAt = System.DateTime.UtcNow };
+            var updatedTask = new TaskItem { Id = 1, Title = "Mismatch", Description = "" , CreatedAt = System.DateTime.UtcNow };
 
             // Act
             var result = await controller.UpdateTask(2, updatedTask); // ID in route (2) doesn't match ID in body (1)
@@ -182,7 +182,7 @@ namespace TaskManager.API.Tests
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            var taskToDelete = new TaskItem { Id = 1, Title = "To Delete", CreatedAt = System.DateTime.UtcNow };
+            var taskToDelete = new TaskItem { Id = 1, Title = "To Delete", Description = "" , CreatedAt = System.DateTime.UtcNow };
             context.Tasks.Add(taskToDelete);
             await context.SaveChangesAsync();
 
