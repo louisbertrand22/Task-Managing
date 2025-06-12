@@ -50,6 +50,7 @@ docker compose up --build
 Task-Managing/
 ├── TaskManager.Web/          # Frontend Angular
 ├── TaskManager.API/          # Backend .NET
+│   └── docs/                # Documentation détaillée de l'API
 ├── docker-compose.yml        # Configuration Docker
 └── README.md                 # Documentation
 ```
@@ -61,6 +62,17 @@ Task-Managing/
 - Tri des tâches par date de création
 - Interface utilisateur responsive
 - API RESTful documentée avec Swagger
+
+## Documentation
+
+### API
+Une documentation détaillée de l'API est disponible dans le dossier `TaskManager.API/docs/`. Elle inclut :
+- Description complète des endpoints
+- Exemples de requêtes et réponses
+- Codes d'erreur
+- Authentification
+- Rate limiting
+- Exemples d'utilisation avec cURL et JavaScript
 
 ## Développement
 
