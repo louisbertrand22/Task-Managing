@@ -52,4 +52,45 @@ main {
   padding: 40px 30px;
   min-height: calc(100vh - 70px);
   box-sizing: border-box;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  mat-toolbar {
+    padding: 0 20px;
+    height: 60px;
+
+    .app-title {
+      font-size: 1.3em;
+    }
+
+    button {
+      padding: 0 16px;
+      height: 38px;
+      font-size: 0.85em;
+      margin-left: 8px;
+    }
+  }
+
+  main {
+    padding: 20px 15px;
+    min-height: calc(100vh - 60px);
+  }
+}
+
+@media (max-width: 480px) {
+  mat-toolbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 15px;
+
+    button {
+      font-size: 0;
+      padding: 0 12px;
+      
+      .mat-icon {
+        margin-right: 0;
+      }
+    }
+  }
 } 

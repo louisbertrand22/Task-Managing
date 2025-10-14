@@ -301,4 +301,50 @@
       background-clip: text;
     }
   }
+
+  /* Responsive design improvements */
+  @media (max-width: 768px) {
+    padding: 20px;
+
+    .header {
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px;
+
+      h1 {
+        font-size: 2.2em;
+      }
+    }
+
+    .filter-sort-card {
+      padding: 20px;
+    }
+
+    .filter-controls, .sort-controls {
+      flex-direction: column;
+      width: 100%;
+
+      mat-form-field {
+        max-width: 100%;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+
+    .task-cards-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header h1 {
+      font-size: 1.8em;
+    }
+
+    .task-card .task-title {
+      font-size: 1.3em;
+    }
+  }
 } 
