@@ -1,21 +1,26 @@
 .task-form-container {
-  max-width: 600px;
-  margin: 20px auto;
+  max-width: 700px;
+  margin: 30px auto;
   padding: 0 20px;
 
   mat-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 30px; /* More internal padding */
-    background-color: #ffffff; /* Explicitly set card background to white */
-    color: #333; /* Darker text for readability */
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    color: #2d3748;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 
     .mat-card-header {
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       .mat-card-title {
-        font-size: 2em;
-        font-weight: 600;
-        color: #333; /* Ensure title is dark */
+        font-size: 2.4em;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
     }
 
@@ -25,11 +30,11 @@
       form {
         display: flex;
         flex-direction: column;
-        gap: 20px; /* Spacing between form fields */
+        gap: 25px;
 
         mat-form-field {
           width: 100%;
-          display: block; /* Explicitly ensure block display */
+          display: block;
           /* Adjusted text color for input fields */
           .mat-form-field-wrapper {
             padding-bottom: 0;
@@ -88,24 +93,39 @@
       .form-actions {
         display: flex;
         justify-content: flex-end;
-        gap: 15px; /* Increased gap */
-        margin-top: 30px; /* Increased margin */
+        gap: 15px;
+        margin-top: 35px;
 
         button {
-          border-radius: 8px;
-          padding: 10px 20px;
-          font-size: 1em;
+          border-radius: 25px;
+          padding: 12px 30px;
+          font-size: 1.05em;
+          font-weight: 600;
+          transition: all 0.3s ease;
           &[mat-raised-button][color="primary"] {
-            background-color: #3f51b5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            
             &:hover {
-              background-color: #303f9f;
+              transform: translateY(-3px);
+              box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            }
+            
+            &:disabled {
+              background: #cbd5e0;
+              color: #a0aec0;
+              box-shadow: none;
+              transform: none;
             }
           }
           &[mat-button] {
-            color: #616161;
+            color: #718096;
+            border: 2px solid #e2e8f0;
+            
             &:hover {
-              background-color: #f0f0f0;
+              background-color: #f7fafc;
+              border-color: #cbd5e0;
             }
           }
         }
