@@ -1,45 +1,60 @@
 .task-details-container {
-  max-width: 800px;
-  margin: 20px auto;
+  max-width: 900px;
+  margin: 30px auto;
   padding: 0 20px;
 
   mat-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 30px;
-    background-color: #ffffff;
-    color: #333;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    color: #2d3748;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 
     .mat-card-header {
-      margin-bottom: 25px;
+      margin-bottom: 30px;
 
       .mat-card-title {
-        font-size: 2.2em;
-        font-weight: 600;
-        color: #333;
+        font-size: 2.6em;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.3;
       }
 
       .mat-card-subtitle {
         display: flex;
-        gap: 10px;
-        margin-top: 10px;
+        gap: 12px;
+        margin-top: 15px;
 
         mat-chip {
-          font-size: 0.85em;
-          padding: 6px 12px;
-          border-radius: 16px;
+          font-size: 0.9em;
+          padding: 10px 20px;
+          border-radius: 20px;
           height: auto;
+          font-weight: 600;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          
+          &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+          
           &.mat-primary {
-            background-color: #e0f2f7;
-            color: #01579b;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
           }
           &.mat-accent {
-            background-color: #f3e5f5;
-            color: #4a148c;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
           }
           &.mat-warn {
-            background-color: #ffe0b2;
-            color: #e65100;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: #2d3748;
           }
         }
       }
@@ -51,25 +66,33 @@
 
       .description {
         white-space: pre-wrap;
-        margin: 20px 0;
-        font-size: 1.1em;
-        line-height: 1.6;
-        color: #444;
+        margin: 25px 0;
+        font-size: 1.15em;
+        line-height: 1.8;
+        color: #4a5568;
+        background-color: rgba(247, 250, 252, 0.5);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
       }
 
       .metadata {
-        color: #666;
-        font-size: 0.95em;
-        border-top: 1px solid #eee;
-        padding-top: 20px;
-        margin-top: 20px;
+        color: #718096;
+        font-size: 1em;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        padding-top: 25px;
+        margin-top: 25px;
 
         p {
-          margin: 5px 0;
+          margin: 10px 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
         }
 
         strong {
-          color: #333;
+          color: #2d3748;
+          font-weight: 600;
         }
       }
     }
@@ -78,35 +101,40 @@
       display: flex;
       justify-content: flex-end;
       gap: 15px;
-      padding: 20px 0 0;
-      border-top: 1px solid #eee;
-      margin-top: 20px;
+      padding: 25px 0 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      margin-top: 25px;
 
       button {
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-size: 1em;
+        border-radius: 25px;
+        padding: 12px 28px;
+        font-size: 1.05em;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        
         .mat-icon {
           margin-right: 8px;
         }
+        
         &[color="warn"] {
-          background-color: #e65100;
-          color: #fff;
+          background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+          color: #2d3748;
+          box-shadow: 0 4px 15px rgba(250, 112, 154, 0.4);
+          
           &:hover {
-            background-color: #bf360c;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(250, 112, 154, 0.6);
           }
         }
-        &[color="primary"] {
-          background-color: #3f51b5;
-          color: #fff;
-          &:hover {
-            background-color: #303f9f;
-          }
-        }
+        
         &[mat-button]:not([color]) {
-          color: #616161;
+          color: #718096;
+          border: 2px solid #e2e8f0;
+          
           &:hover {
-            background-color: #f0f0f0;
+            background-color: #f7fafc;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
           }
         }
       }
